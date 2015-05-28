@@ -54,6 +54,7 @@ public class Algorithm implements PlugIn{
 		
 		ImageProcessor ip = new ByteProcessor(width, height);
 		result = new ImagePlus(" ", ip);
+		result.setCalibration(left.getCalibration());
 	
 		switch (currentIndex) {
 		case 0: // Add

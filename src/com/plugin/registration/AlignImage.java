@@ -31,7 +31,7 @@ public class AlignImage implements PlugIn {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public void run(String arg) {
 

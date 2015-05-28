@@ -1,4 +1,4 @@
-package com.plugin;
+package com.plugin.registration;
 
 import ij.IJ;
 import ij.ImagePlus;

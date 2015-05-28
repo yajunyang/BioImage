@@ -1,12 +1,3 @@
-/* -*- mode: java; c-basic-offset: 8; indent-tabs-mode: t; tab-width: 8 -*- */
-
-/*
- * Albert_Test.java
- *
- * Created on 07-Oct-2007, 15:17:53
- *
- */
-
 package com.plugin.tracing.tracing;
 
 import features.ComputeCurvatures;
@@ -20,6 +11,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+/**
+ *¡ü F. Frangi, W. J. Niessen, K. L. Vinc, and M. A. Viergever (1998),
+	<br/>"Multiscale Vessel Enhancement Filtering"
+	<br/> Medical Image Computing and Computer-Assisted Intervention ¡ª MICCAI¡¯98 Lecture Notes in Computer Science 1496: 130
+ */
 public class Albert_Test implements PlugIn {
 
 	public void run(String ignored) {
@@ -78,18 +74,13 @@ public class Albert_Test implements PlugIn {
 
                 ComputeCurvatures hessian = null;
                 if(true)  {
-
-                        System.out.println("Calculating Gaussian...");
-
                         // In most cases you'll get better results by using the Hessian
                         // based measure of curvatures at each point, so calculate that
                         // in advance.
                         hessian = new ComputeCurvatures(imagePlus, minimumSeparation, null, calibration != null);
                         hessian.run();
                 }
-
-		System.out.println("Finished calculating Gaussian.");
-
+                
 		// Give up after 3 minutes.
 		// int timeoutSeconds = 3 * 60;
                 int timeoutSeconds = 0;
