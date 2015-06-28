@@ -9,15 +9,6 @@ import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 
 /**
- * <p>
- *===========What annotates has moved to class {@link DirectionDetect.java}
- * <p>
- * In this class, we only deal with 8-bits images.
- * <p>Using gaussian function to convolve with the original image
- * to get the hessian matrix which relates to {@link scale}, and
- * we get the eigen values of the hessian matrix. <p>Get the eigen vector
- * of the eigen value which is bigger in absolute form. By the vector,
- * we can get the angle, this is considered as the orientation of the linear feature.
  * <p> We provide two modes to see the process. The {@link testMode} checkbox shows
  * which point is smoothed.<p> In fact, there are two procedures to smooth the linear feature of the 
  * dentrite and axion. First, judge which point need smoothed and find the orientation 
@@ -28,70 +19,35 @@ import ij.process.ImageProcessor;
  */
 public class AnistropicHessianSmooth implements PlugIn{
 
-	private ImagePlus ips;
-
 	private static double a = 2.0;
+
 	private static double b = 1.0;
 	private static double h = 3;
 	private static double sample = 1;
-	
 	/** If {@link testMode}is true, it will show the "linear feature marked" image */
 	private static boolean testMode = false;
-	/** Only when {@link testMode} is true, if {@link isMainMode} is true, it will put out the marked points' orientation degree and the smooth matrix */
-	private static boolean isMainMode = false; 
 	
-	@Override
-	public void run(String arg) {
-		ips = WindowManager.getCurrentImage();
-		if(null == ips) {
-			IJ.noImage();
-			return;
-		}
-		if(ips.getType() != ImagePlus.GRAY8) {
-			IJ.showMessage("Only 8-bits gray image");
-			return;
-		}
-		if(!showDialog(true)) return;
-		
-		ImageProcessor result = ips.getProcessor().duplicate();
-		anisSmooth(result);
-		
-		ImagePlus ipsResult = new ImagePlus(ips.getTitle()+" Anistropic Smmoth " + DirectionDetect.scale, result);
-		ipsResult.setCalibration(ips.getCalibration());
-		ipsResult.setDisplayRange(0, 255);
-		ipsResult.show();
-	}
+	/** Only when {@link testMode} is true, if {@link isMainMode} is true, it will put out the marked points' orientation degree and the smooth matrix 
+	 * this is usually used in main() start.*/
+	private static boolean isMainMode = false;
+	private static boolean isAnistropic = true; 
 	
-	public boolean showDialog(boolean isPlugin) {
-		GenericDialog gd = new GenericDialog("AnistropicHessianSmooth");
-		
-		gd.addCheckbox("Whether Test Mode ", testMode);
-		gd.addCheckbox("Whether Test  Out ", isMainMode);
-		
-		gd.addNumericField("a :", a, 1);
-		gd.addNumericField("b :", b, 1);
-		gd.addNumericField("h :", h, 0);
-		gd.addNumericField("Sample :", sample, 0);
-		gd.showDialog();
-
-		if (gd.wasCanceled())
-			return false;
-		
-		testMode = gd.getNextBoolean();
-		isMainMode = gd.getNextBoolean();
-		
-		a = gd.getNextNumber();
-		b = gd.getNextNumber();
-		h = gd.getNextNumber();
-		sample = gd.getNextNumber();
-		if ((int) h % 2 == 0)
-			h -= 1;
-		if (h < 3)
-			h = 3;
-		return true;
-	}
+	private ImagePlus ips;
+	
+	public AnistropicHessianSmooth() {}
 	
 	public void anisSmooth(ImageProcessor ip) {
+		int width = ip.getWidth();
+		int height = ip.getHeight();
+		if(!isAnistropic) {
+			double[][] kernel = getOrientedGaussianKernel(a, a, 0, (int)h, sample);
+			for(int y=0; y<height; y++)
+				for(int x=0; x<width; x++) {					
+					convolve(ip, x, y, kernel);
+				}
+			return;
+		}
+		
 		DirectionDetect direct = new DirectionDetect(ip);
 		direct.run();
 		
@@ -100,8 +56,6 @@ public class AnistropicHessianSmooth implements PlugIn{
 			IJ.showMessage("wrong degree output!");
 			return;
 		}
-		int width = ip.getWidth();
-		int height = ip.getHeight();
 		
 		for(int y=0; y<height; y++)
 			for(int x=0; x<width; x++) {
@@ -114,37 +68,8 @@ public class AnistropicHessianSmooth implements PlugIn{
 			}
 	}
 	
-	/**The original point is in the center of the matrix which is odd
-	 * If axis is 0, inverse by y axis
-	 * If axis is 1, inverse by x axis 
-	 * @param kernel
-	 * @param axis
-	 * @return 
-	 */
-	public double[][] reverseKernel(double[][] kernel, int axis) {
-		int col = kernel[0].length;
-		int row = kernel.length;
-		if(col != row || row %2 ==0) throw new IllegalArgumentException();
-		double[][] k = new double[row][col];
-		for(int i=0; i<row; i++) {
-			for(int j=0; j<col; j++) {
-				switch(axis) { 
-					case 0:
-						k[i][j] = kernel[row-1-i][j];
-						break;
-					case 1:
-						k[i][j] = kernel[i][col-1-j];	
-						break;
-				}
-			}
-		}
-		return k;
-	}
-	
-	
 	public void convolve(ImageProcessor ip, int x, int y, double[][] kernel) {	
 		double pixelValue = 0;
-		
 		if(testMode) { // mark the smoothed point 	
 			pixelValue = 255; 
 			ip.putPixel(x, y, (int)pixelValue);
@@ -207,8 +132,7 @@ public class AnistropicHessianSmooth implements PlugIn{
 		}
 		return kernel;
 	}
-
-	public AnistropicHessianSmooth() {}
+	
 	
 	public void main(String[] args) {	
 		isMainMode = true;
@@ -240,5 +164,82 @@ public class AnistropicHessianSmooth implements PlugIn{
 				}
 				System.out.println();
 			}
+	}
+	
+	/**The original point is in the center of the matrix which is odd
+	 * If axis is 0, inverse by y axis
+	 * If axis is 1, inverse by x axis 
+	 * @param kernel
+	 * @param axis
+	 * @return 
+	 */
+	public double[][] reverseKernel(double[][] kernel, int axis) {
+		int col = kernel[0].length;
+		int row = kernel.length;
+		if(col != row || row %2 ==0) throw new IllegalArgumentException();
+		double[][] k = new double[row][col];
+		for(int i=0; i<row; i++) {
+			for(int j=0; j<col; j++) {
+				switch(axis) { 
+					case 0:
+						k[i][j] = kernel[row-1-i][j];
+						break;
+					case 1:
+						k[i][j] = kernel[i][col-1-j];	
+						break;
+				}
+			}
+		}
+		return k;
+	}
+
+	@Override
+	public void run(String arg) {
+		ips = WindowManager.getCurrentImage();
+		if(null == ips) {
+			IJ.noImage();
+			return;
+		}
+		if(ips.getType() != ImagePlus.GRAY8) {
+			IJ.showMessage("Only 8-bits gray image");
+			return;
+		}
+		if(!showDialog(true)) return;
+		
+		ImageProcessor result = ips.getProcessor().duplicate();
+		anisSmooth(result);
+		
+		ImagePlus ipsResult = new ImagePlus(ips.getTitle()+" Anistropic Smmoth " + DirectionDetect.scale, result);
+		ipsResult.setCalibration(ips.getCalibration());
+		ipsResult.setDisplayRange(0, 255);
+		ipsResult.show();
+	}
+	
+	public boolean showDialog(boolean isPlugin) {
+		GenericDialog gd = new GenericDialog("AnistropicHessianSmooth");	
+		gd.addCheckbox("Use Anistropic:", isAnistropic);
+		gd.addNumericField("a :", a, 1);
+		gd.addNumericField("b :", b, 1);
+		gd.addNumericField("h :", h, 0);
+		gd.addNumericField("Sample :", sample, 0);
+		gd.addCheckbox("Whether Test Mode ", testMode);
+		gd.addCheckbox("Whether Test  Out ", isMainMode);	
+		
+		gd.showDialog();
+		if (gd.wasCanceled())
+			return false;
+		isAnistropic = gd.getNextBoolean();
+		a = gd.getNextNumber();
+		b = gd.getNextNumber();
+		h = gd.getNextNumber();
+		sample = gd.getNextNumber();
+		testMode = gd.getNextBoolean();
+		isMainMode = gd.getNextBoolean();
+		
+		if ((int) h % 2 == 0)
+			h -= 1;
+		if (h < 3)
+			h = 3;
+		return true;
 	}
 }

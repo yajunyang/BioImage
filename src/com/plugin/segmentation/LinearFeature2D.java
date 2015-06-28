@@ -183,8 +183,7 @@ class MyHessian2D {
 		if (lam2 > 0)
 			return 0;
 
-		double rb2 = (Math.abs(lam1) / Math.abs(lam2))
-				* (Math.abs(lam1) / Math.abs(lam2));
+		double rb2 = (lam1 / lam2) * (lam1 / lam2 );
 		double b2 = 2 * beta * beta;
 		double s2 = lam1 * lam1 + lam2 * lam2;
 		double r = -s2 / (2 * c * c);
