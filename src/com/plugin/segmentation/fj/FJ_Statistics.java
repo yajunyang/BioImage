@@ -134,6 +134,7 @@ public class FJ_Statistics implements PlugIn, ItemListener, WindowListener {
 
 	private static Point pos = new Point(-1,-1);
 
+	@Override
 	public void run(String arg) {
 
 		if (!FJ.libcheck()) return;
@@ -150,7 +151,7 @@ public class FJ_Statistics implements PlugIn, ItemListener, WindowListener {
 		gd.addCheckbox(" Channel numbering",channel);
 		gd.addCheckbox(" Time frame numbering",time);
 		gd.addCheckbox(" Slice numbering",slice);
-		final Vector checkboxes = gd.getCheckboxes();
+		final Vector<?> checkboxes = gd.getCheckboxes();
 		final int veclen = checkboxes.size();
 		slicebox = (Checkbox)checkboxes.get(veclen-1); slicebox.addItemListener(this);
 		timebox = (Checkbox)checkboxes.get(veclen-2); timebox.addItemListener(this);
@@ -180,6 +181,7 @@ public class FJ_Statistics implements PlugIn, ItemListener, WindowListener {
 		(new FJStatistics()).run(imp,values,clear,name,channel,time,slice,decimals);
 	}
 
+	@Override
 	public void itemStateChanged(final ItemEvent e) {
 
 		if (e.getSource() == slicebox) {
@@ -201,22 +203,29 @@ public class FJ_Statistics implements PlugIn, ItemListener, WindowListener {
 		}
 	}
 
+	@Override
 	public void windowActivated(final WindowEvent e) { }
 
+	@Override
 	public void windowClosed(final WindowEvent e) {
 
 		pos.x = e.getWindow().getX();
 		pos.y = e.getWindow().getY();
 	}
 
+	@Override
 	public void windowClosing(final WindowEvent e) { }
 
+	@Override
 	public void windowDeactivated(final WindowEvent e) { }
 
+	@Override
 	public void windowDeiconified(final WindowEvent e) { }
 
+	@Override
 	public void windowIconified(final WindowEvent e) { }
 
+	@Override
 	public void windowOpened(final WindowEvent e) { }
 
 }
@@ -228,15 +237,12 @@ class FJStatistics {
 
 	private boolean[] values = null;
 
-	private boolean clear = false;
 	private boolean name = true;
 	private boolean channel = false;
 	private boolean time = false;
 	private boolean slice = false;
 
 	private static int number = 0;
-
-	private int decimals = 3;
 
 	void run(
 		final ImagePlus imp,
@@ -251,13 +257,10 @@ class FJStatistics {
 
 		this.values = new boolean[values.length];
 		for (int i=0; i<values.length; ++i) this.values[i] = values[i];
-		this.clear = clear;
 		this.name = name;
 		this.channel = channel;
 		this.time = time;
 		this.slice = slice;
-		this.decimals = decimals;
-
 		try {
 			// Initialize:
 			if (decimals < 0 || decimals > 10) {

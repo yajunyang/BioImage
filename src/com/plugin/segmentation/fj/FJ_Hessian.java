@@ -15,12 +15,8 @@ package com.plugin.segmentation.fj;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
-import ij.process.ImageProcessor;
 import imagescience.feature.Hessian;
 import imagescience.image.Aspects;
-import imagescience.image.Axes;
-import imagescience.image.Coordinates;
-import imagescience.image.Dimensions;
 import imagescience.image.FloatImage;
 import imagescience.image.Image;
 
@@ -42,10 +38,9 @@ public class FJ_Hessian implements PlugIn, WindowListener {
 
 	private static String scale = "1.0";
 
-	private ImagePlus imp = null;
-
 	private static Point pos = new Point(-1,-1);
 
+	@Override
 	public void run(String arg) {
 
 		if (!FJ.libcheck()) return;
@@ -83,22 +78,29 @@ public class FJ_Hessian implements PlugIn, WindowListener {
 		(new FJHessian()).run(imp,largest,middle,smallest,absolute,scale);
 	}
 
+	@Override
 	public void windowActivated(final WindowEvent e) { }
 
+	@Override
 	public void windowClosed(final WindowEvent e) {
 
 		pos.x = e.getWindow().getX();
 		pos.y = e.getWindow().getY();
 	}
 	
+	@Override
 	public void windowClosing(final WindowEvent e) { }
 
+	@Override
 	public void windowDeactivated(final WindowEvent e) { }
 
+	@Override
 	public void windowDeiconified(final WindowEvent e) { }
 
+	@Override
 	public void windowIconified(final WindowEvent e) { }
 
+	@Override
 	public void windowOpened(final WindowEvent e) { }
 
 }

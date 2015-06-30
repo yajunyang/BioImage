@@ -57,6 +57,7 @@ public class FJ_Structure implements PlugIn, WindowListener {
 
 	private static Point pos = new Point(-1, -1);
 
+	@Override
 	public void run(String arg) {
 
 		if (!FJ.libcheck())
@@ -96,27 +97,34 @@ public class FJ_Structure implements PlugIn, WindowListener {
 		(new FJStructure()).run(imp, largest, middle, smallest, sscale, iscale);
 	}
 
+	@Override
 	public void windowActivated(final WindowEvent e) {
 	}
 
+	@Override
 	public void windowClosed(final WindowEvent e) {
 
 		pos.x = e.getWindow().getX();
 		pos.y = e.getWindow().getY();
 	}
 
+	@Override
 	public void windowClosing(final WindowEvent e) {
 	}
 
+	@Override
 	public void windowDeactivated(final WindowEvent e) {
 	}
 
+	@Override
 	public void windowDeiconified(final WindowEvent e) {
 	}
 
+	@Override
 	public void windowIconified(final WindowEvent e) {
 	}
 
+	@Override
 	public void windowOpened(final WindowEvent e) {
 	}
 

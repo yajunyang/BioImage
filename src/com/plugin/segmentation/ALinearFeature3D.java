@@ -25,7 +25,7 @@ import imagescience.image.Image;
 import imagescience.utility.Messenger;
 import imagescience.utility.Progressor;
 
-public class LinearFeature3D implements PlugIn {
+public class ALinearFeature3D implements PlugIn {
 
 	private String scaleMinStr = "1.0";
 	private String scaleStepStr = "0.2";

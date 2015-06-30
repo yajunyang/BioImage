@@ -22,10 +22,11 @@ public class FJ_Panel implements PlugIn, ActionListener, WindowListener {
 
 	private Button derivatives, edges, hessian;
 	private Button laplacian, statistics, structure;
-	private Button about, options, website;
+	private Button about, options;
 
 	private static Point pos = new Point(-1,-1);
 
+	@Override
 	public void run(String arg) {
 
 		if (!FJ.libcheck()) return;
@@ -50,7 +51,7 @@ public class FJ_Panel implements PlugIn, ActionListener, WindowListener {
 
 		about = addButton("About");
 		options = addButton("Options");
-		website = addButton("Website");
+		addButton("Website");
 
 		dialog.add(panel);
 		dialog.pack();
@@ -67,6 +68,7 @@ public class FJ_Panel implements PlugIn, ActionListener, WindowListener {
 		return b;
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
 
 		final Object source = e.getSource();
@@ -80,26 +82,33 @@ public class FJ_Panel implements PlugIn, ActionListener, WindowListener {
 		else if (source == options) IJ.doCommand("FeatureJ Options");
 	}
 
+	@Override
 	public void windowActivated(final WindowEvent e) { }
 
+	@Override
 	public void windowClosed(final WindowEvent e) {
 
 		pos.x = e.getWindow().getX();
 		pos.y = e.getWindow().getY();
 	}
 
+	@Override
 	public void windowClosing(final WindowEvent e) {
 
 		dialog.setVisible(false);
 		dialog.dispose();
 	}
 
+	@Override
 	public void windowDeactivated(final WindowEvent e) { }
 
+	@Override
 	public void windowDeiconified(final WindowEvent e) { }
 
+	@Override
 	public void windowIconified(final WindowEvent e) { }
 
+	@Override
 	public void windowOpened(final WindowEvent e) { }
 
 }

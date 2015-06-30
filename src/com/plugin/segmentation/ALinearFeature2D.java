@@ -21,7 +21,7 @@ import imagescience.image.FloatImage;
 import imagescience.image.Image;
 import imagescience.feature.Differentiator;
 
-public class LinearFeature2D implements PlugIn {
+public class ALinearFeature2D implements PlugIn {
 
 	private static String scaleMinStr = "1.0";
 	private static String scaleStepStr = "0.2";
@@ -168,8 +168,8 @@ class MyHessian2D {
 							lamubda1 = lamubda2;
 							lamubda2 = temp;
 						} // Be sure |lamubda1| <= |lamubda2|
-						double beta = Double.parseDouble(LinearFeature2D.beta);
-						double cValue = Double.parseDouble(LinearFeature2D.c);
+						double beta = Double.parseDouble(ALinearFeature2D.beta);
+						double cValue = Double.parseDouble(ALinearFeature2D.c);
 
 						ahxx = getFrangi(lamubda1, lamubda2, beta, cValue);
 						Hxx.set(coords, ahxx);

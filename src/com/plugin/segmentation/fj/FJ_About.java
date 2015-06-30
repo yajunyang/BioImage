@@ -5,10 +5,9 @@ import ij.plugin.PlugIn;
 
 import java.util.Calendar;
 
-import org.apache.commons.math3.analysis.function.Gaussian;
-
 public class FJ_About implements PlugIn {
 
+	@Override
 	public void run(String arg) {
 
 		IJ.showMessage(
