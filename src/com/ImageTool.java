@@ -243,7 +243,7 @@ public class ImageTool {
 	}
 	
 	
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "unchecked" })
 	@Deprecated
 	private static void factorialArray(Object objectArrays) {
 		

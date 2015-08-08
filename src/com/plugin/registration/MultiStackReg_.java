@@ -97,6 +97,7 @@ import ij.process.FloatProcessor;
 import ij.process.ImageConverter;
 import ij.process.ShortProcessor;
 
+
 // Java 1.1
 import java.awt.BorderLayout;
 import java.awt.Button;
@@ -2465,6 +2466,7 @@ private ImagePlus registerSlice (
 private ImagePlus[] createAdmissibleImageList (
 ) {
 	final int[] windowList = WindowManager.getIDList();
+	@SuppressWarnings("rawtypes")
 	final Stack stack = new Stack();
 	for (int k = 0; ((windowList != null) && (k < windowList.length)); k++) {
 		final ImagePlus imp = WindowManager.getImage(windowList[k]);

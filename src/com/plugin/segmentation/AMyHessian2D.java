@@ -1,113 +1,16 @@
 package com.plugin.segmentation;
 
-/**
- * 2015/5/18
- * This version is a improvement of LinearFeature2D
- * In this version, we reuse the shared object and reduce the cost of memory.
- * 
- * Hessian 矩阵
- * 最大绝对特征值所对应的特征向量即为线形结构方向 n(x, y)
- */
-import ij.IJ;
-import ij.ImagePlus;
-import ij.WindowManager;
-import ij.gui.GenericDialog;
-import ij.plugin.PlugIn;
-import ij.process.ImageConverter;
+import imagescience.feature.Differentiator;
 import imagescience.image.Aspects;
 import imagescience.image.Coordinates;
 import imagescience.image.Dimensions;
 import imagescience.image.FloatImage;
 import imagescience.image.Image;
-import imagescience.feature.Differentiator;
 
-public class ALinearFeature2D implements PlugIn {
-
-	private static String scaleMinStr = "1.0";
-	private static String scaleStepStr = "0.2";
-	private static String scaleMaxStr = "3.0";
-
-	public static String beta = "0.5";
-	public static String c = "15";
-
-	@Override
-	public void run(String arg) {
-		Runtime.getRuntime().gc();
-		final ImagePlus imp = WindowManager.getCurrentImage();
-		if (imp == null)
-			return;
-		if (imp.getType() != ImagePlus.GRAY8) {
-			IJ.showMessage("Only 8-bits gray image");
-		}
-		if (imp.getNSlices() != 1)
-			return;
-		Image img = Image.wrap(imp);
-
-		if (!showDialog())
-			return;
-
-		double scaleMin = Double.parseDouble(scaleMinStr);
-		double scaleStep = Double.parseDouble(scaleStepStr);
-		double scaleMax = Double.parseDouble(scaleMaxStr);
-
-		MyHessian2D myHessian2D = new MyHessian2D();
-		Image eigenImage = myHessian2D.run(img, scaleMin);
-
-		ImagePlus imps = eigenImage.imageplus(); // share
-		new ImageConverter(imps).convertToGray8();
-
-		// Multi-scale method
-		for (double scale = scaleMin + scaleStep; scale <= scaleMax; scale += scaleStep) {
-			IJ.showProgress(scale / scaleMax);
-			Image eigenImage1 = myHessian2D.run(img, scale);
-			ImagePlus imps1 = eigenImage1.imageplus(); // share
-			new ImageConverter(imps1).convertToGray8();
-
-			int w = imp.getWidth();
-			int h = imp.getHeight();
-			for (int y = 0; y < h; y++)
-				for (int x = 0; x < w; x++) {
-					int value = imps.getProcessor().get(x, y);
-					int value1 = imps1.getProcessor().get(x, y);
-					value = value > value1 ? value : value1; // 最大值融合方式
-					imps.getProcessor().set(x, y, value);
-				}
-		}
-		IJ.showProgress(1.0);
-
-		imps.setTitle("result");
-		imps.show();
-	}
-
-	private boolean showDialog() {
-		GenericDialog gd = new GenericDialog("LinearFeature2D_1");
-		gd.addStringField("scaleMin: ", scaleMinStr);
-		gd.addStringField("scaleStep: ", scaleStepStr);
-		gd.addStringField("scaleMax: ", scaleMaxStr);
-		gd.addStringField("beta: ", beta);
-		gd.addStringField("c: ", c);
-
-		gd.showDialog();
-
-		if (gd.wasCanceled())
-			return false;
-
-		scaleMinStr = gd.getNextString();
-		scaleStepStr = gd.getNextString();
-		scaleMaxStr = gd.getNextString();
-		beta = gd.getNextString();
-		c = gd.getNextString();
-
-		return true;
-	}
-
-}
-
-class MyHessian2D {
-
+public class AMyHessian2D {
 	public final Differentiator differentiator = new Differentiator();
 
-	public MyHessian2D() {
+	public AMyHessian2D() {
 	}
 
 	/**
