@@ -1,3 +1,5 @@
 # BioImage
-这是一项基于ImageJ开源软件的生物图像处理工程！
-除了ImageJ自带的图像处理工具，还编写和引用了大量的关于生物图像线形分割，配准和神经结构示踪的一些程序！
+This is a project for Bio-Image processing based on ImageJ!
+
+Besides the existing image processing methods on ImageJ, I write and clone some image processing
+methods about Image Linear Structure Segmentation, Registration and Neural Structure Tracing!
