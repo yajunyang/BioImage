@@ -14,15 +14,15 @@ import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
 import ij.process.ImageConverter;
+import imagescience.feature.Differentiator;
 import imagescience.image.Aspects;
 import imagescience.image.Coordinates;
 import imagescience.image.Dimensions;
 import imagescience.image.FloatImage;
 import imagescience.image.Image;
-import imagescience.feature.Differentiator;
 
 public class ALinearFeature2D implements PlugIn {
-
+	
 	private static String scaleMinStr = "1.0";
 	private static String scaleStepStr = "0.2";
 	private static String scaleMaxStr = "3.0";

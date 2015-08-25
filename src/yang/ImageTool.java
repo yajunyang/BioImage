@@ -98,7 +98,7 @@ public class ImageTool {
 		String[] file2 = {"res/222.jpg"};
 		cutROIs(file1, file2, 200, 100, 40, 40);
 	}
-	
+
 	
 	/*=============================Transform Method 1==========================*/
 	
