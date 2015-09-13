@@ -60,7 +60,7 @@ public class AComBinary implements PlugIn {
 		ips.show();
 	}
 
-	public boolean showDialog() {
+	private boolean showDialog() {
 		GenericDialog gd = new GenericDialog("NiBlack");
 		gd.addStringField("kernel size: ", dim);
 		gd.addStringField("k value: ", k);
@@ -95,7 +95,7 @@ public class AComBinary implements PlugIn {
 	 * @param k The  coefficient of {@link s}
 	 * <br/> T = m = k * s
 	 */
-	public void niBlackThreshold(int dims, double k) {
+	private void niBlackThreshold(int dims, double k) {
 		int width = ip.getWidth();
 		int height = ip.getHeight();
 		niBlack.setkValue(k);
@@ -117,7 +117,7 @@ public class AComBinary implements PlugIn {
 		}
 	}
 	
-	public double getThreshNiblack(ImageProcessor ip, int[][] kernel, int dimen, int x, int y) {
+	private double getThreshNiblack(ImageProcessor ip, int[][] kernel, int dimen, int x, int y) {
 		for (int j = 0; j < dimen; j++) {
 			for (int i = 0; i < dimen; i++) {
 				kernel[j][i] = ip.getPixel(x + i - dimen / 2, y + j - dimen / 2);
@@ -127,7 +127,7 @@ public class AComBinary implements PlugIn {
 		return niBlack.getThreshold();
 	}
 
-	public void niBlackCorrection(ImageProcessor cip, ImageProcessor nbip) {
+	private void niBlackCorrection(ImageProcessor cip, ImageProcessor nbip) {
 		int error = 0;
 		if(otsuError.startsWith("+")) {
 			String errorString = otsuError.substring(1);
@@ -231,7 +231,7 @@ class ConnectedDomain {
 	
 	private int threshold;
 	private int num; 
-	private int[] cDNum;
+	private int[] cDNum;	// 
 	private int loopControl; // Control the time of the recursion
 	
 	private int loopMax = 200;
