@@ -14,6 +14,8 @@ public class BackGroundChange implements PlugIn{
 		if(null == ips) 
 			return;
 		
+		
+		
 	}
 
 }

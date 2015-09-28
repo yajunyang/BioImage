@@ -1,9 +1,13 @@
 package yang.plugin.segmentation;
 
+import java.awt.Color;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.GenericDialog;
+import ij.gui.Plot;
+import ij.gui.PlotWindow;
 import ij.plugin.PlugIn;
 import ij.process.ImageProcessor;
 
@@ -21,9 +25,10 @@ public class AComBinary implements PlugIn {
 	static String divation = "0.0";
 	static String otsuError = "+20";
 	
-	static String maxConnectedDomain = "200";
-	static String minConnectedDomain = "50";
-	static String registerError = "50";
+	static String maxConnectedDomain = "200"; // “最终图像”防止递归栈溢出设置的最大连通域点数
+	static String minConnectedDomain = "50"; // “最终图像”允许的最小连通域点数
+	
+	static String registerError = "50"; // otsu 图像和 niblack 建立“匹配规则”用的点数
 	static String a = "0.0";
 	
 	static boolean autoRegister = true;
@@ -144,6 +149,7 @@ public class AComBinary implements PlugIn {
 		domain.init();
 		domain.threshold(error);
 		domain.connect();
+		domain.drawHistgram();
 	}
 }
 
@@ -231,7 +237,13 @@ class ConnectedDomain {
 	
 	private int threshold;
 	private int num; 
-	private int[] cDNum;	// 
+	private int[] cDNum; // NiBlack标号连通域的长度	
+	private int[] mark;  // NiBlack连通域与Otsu对应位置匹配后的匹配点数
+	
+	// 这里可以画一张图形
+	// x 坐标为 cdNum和mark的下标（连通域标号）
+	// y有两条曲线(或直方图），一条为连通域长度，一条连通域与Otsu对应位置匹配点数。
+	
 	private int loopControl; // Control the time of the recursion
 	
 	private int loopMax = 200;
@@ -283,34 +295,38 @@ class ConnectedDomain {
 	void connect() {	
 		marker();	
 		
+		// 在设置“Otsu落在连通域上点数”值时，建立了一种方法。
+		// "自动点数生成方法"
+		// 对数组cdNum求均值和方差
+		// 那么“点数” = mean + a * var
 		if(AComBinary.autoRegister) 
 			autoRegister(Double.parseDouble(AComBinary.a));
 
-		int[] mark = new int[cDNum.length];
-		for(int i = 0; i < mark.length; i++) {
-			mark[i] = 0;
-		}
-		
+		mark = new int[cDNum.length];		
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
+				
 				// NOTE: We assume that the number of the marked points with the same number
 				// represents the length of the correspondent Connected-Domain.
+				
 				// Only if the minimum length of the Connected-Domain bigger than 
 				// an allowed length and the correspondent position's value in the "Otsu template image"'s 4 or 8 neighbored 
 				// is not all 0, then "Connected-Domain will be stayed".
-				if(nbip.getPixel(x, y) == 0) continue;
+				if(nbip.getPixel(x, y) == 0) //INGORE　THE CONDITION THAT PIXEL VALUE ZERO
+					continue; // 不考虑像素为0的情况
 				
 				if(cDNum[marker[y][x]] < minConnectedDomain) { // Clear the Connected-Domain that is too short
-					nbip.set(x, y, 0);
+					nbip.set(x, y, 0); // 如果该点所落在的连通域长度小于允许的最小连通域长度，舍弃该连通域。
 				}
 
+				
 				if (!AComBinary.test) {
 					// NOTE: We set a 'mark' array which has the same length with the number of 'label+1' and 
 					// 'label' [2 ~ label] represents the Connected-Domain marker value.
 					// If the Otsu template image pixel value is 255, the correspondence Connected-Domain
-					// will be stayed, we 'mark' the mark array 1 at the correspondence position.
+					// will be stayed, we mark the 'mark' array 1 at the correspondence position.
 					if (cdip.get(x, y) == 255) {
-						mark[marker[y][x]]++;	// statistics of the 'registration' number
+						mark[marker[y][x]]++;	// 统计NiBlack相应连通域位置对应Otsu图像上位置匹配点数（Otsu上对应位置值为255）
 					}
 				}
 			}
@@ -318,8 +334,11 @@ class ConnectedDomain {
 		if (!AComBinary.test) {
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
-					if(nbip.get(x, y) == 0) continue;
-					if (mark[marker[y][x]] < registerError && marker[y][x] != 0 && marker[y][x] != 1) {
+					if(nbip.get(x, y) == 0)
+						continue;
+					if (mark[marker[y][x]] < registerError 
+							&& marker[y][x] != 0 
+							&& marker[y][x] != 1) {
 						nbip.set(x, y, 0);
 					}
 				}
@@ -327,6 +346,11 @@ class ConnectedDomain {
 		}
 	}
 	
+	
+	public void drawHistgram(){
+		// 画出两条曲线
+		
+	}
 	
 	private void marker() {
 		int label = 2;
@@ -345,7 +369,8 @@ class ConnectedDomain {
 		// SO the length of the array 'cdNum' should be label+1 == 10
 		num = label + 1;
 		
-		cDNum = new int[num];
+		// statistics the length of connected-domain
+		cDNum = new int[num]; // all be zero in default condition 
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
 				++cDNum[marker[y][x]];	// statistics of the number of correspondent marker 
@@ -353,14 +378,14 @@ class ConnectedDomain {
 			}
 		}
 	}
-
+	
 	/** Depth-First Search*/
 	private boolean DFS(int x, int y, int label) {
 		if(++loopControl > loopMax) {
 			return false;
 		}
 		if(1 != marker[y][x]) {
-			return false;
+			return false; /// only the number ONE to be marked 
 		} else {
 			marker[y][x] = label;
 			for(int i = 0; i < 4; i++) {
@@ -378,16 +403,15 @@ class ConnectedDomain {
 		for(int i=0; i<cDNum.length; i++) {
 			mean += cDNum[i];
 		}
-		mean /= cDNum.length;
+		mean /= cDNum.length; // 均值
 		
 		for(int i=0; i<cDNum.length; i++) {
 			var += (cDNum[i]-mean) * (cDNum[i]-mean);
 		}
 		var /= cDNum.length;
-		var = Math.sqrt(var);
+		var = Math.sqrt(var); // 方差
 		
 		registerError = minConnectedDomain = (int)(mean + var * a);		
-//		System.out.println(minConnectedDomain + " " + registerError);
 	}
 	
 	private boolean check(int x, int y) {
