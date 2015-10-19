@@ -419,7 +419,7 @@ class ConnectedDomain {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				// marker[y][x] 对应标记结果
-				// mark[marker[y][x]]对应对应标记连通域相应Otsu上落在连通域上的亮点数
+				// mark[marker[y][x]]Otsu落在相应连通域上的亮点数
 				int markValue = mark[marker[y][x]]; 
 				if (nbip.get(x, y) == 0)
 					continue;
