@@ -2,7 +2,7 @@ package yang.plugin.segmentation;
 
 /**
  * 2015/5/18
- * This version is a improvement of LinearFeature2D
+ * This version is an improvement of LinearFeature2D
  * In this version, we reuse the shared object and reduce the cost of memory.
  * 
  * Hessian æÿ’Û

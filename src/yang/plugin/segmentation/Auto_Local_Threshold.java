@@ -29,7 +29,8 @@ import ij.process.ImageProcessor;
                 
 public class Auto_Local_Threshold implements PlugIn {
         /** Ask for parameters and then execute.*/
-        public void run(String arg) {
+
+	public void run(String arg) {
 		// 1 - Obtain the currently active image:
 		ImagePlus imp = IJ.getImage();
 
