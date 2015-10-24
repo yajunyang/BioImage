@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 /**
  * This {@link threshold} method is a combination of NiBlack threshold method
@@ -22,10 +21,10 @@ import java.util.logging.Logger;
 public class AComBinary implements PlugIn {
 
 	ImageProcessor ip;
-	static String dim = "5";
-	static String k = "0.25";
+	static String dim = "5"; 
+	static String k = "0.5";
 	static String divation = "0.0";
-	static String otsuError = "30";
+	static String otsuError = "40";
 
 	static String maxConnectedDomain = "200"; // 防止递归栈溢出设置的最大连通域点数
 	static String minConnectedDomain = "50"; // 允许的最小连通域点数
@@ -146,8 +145,8 @@ public class AComBinary implements PlugIn {
 		domain.init();
 		domain.threshold(error);
 //		domain.connect();
-//		domain.connectVariableRatio(0.6); // 可变阈值比值法
-		domain.histogramBasedMethod();  // 基于直方图的全局阈值方法
+		domain.connectVariableRatio(0.8); // 可变阈值比值法
+//		domain.histogramBasedMethod();  // 基于直方图的全局阈值方法
 	}
 }
 
@@ -415,7 +414,7 @@ class ConnectedDomain {
 			}
 		}
 
-		int T = getConnectThreshold(THRESHOLD.ITERATIVE);
+		int T = getConnectThreshold(THRESHOLD.EXPECT);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				// marker[y][x] 对应标记结果
