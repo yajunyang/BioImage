@@ -8,6 +8,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 import ij.IJ;
 import ij.plugin.PlugIn;
 
@@ -38,6 +40,29 @@ public class AddNucleus implements PlugIn{
 		g.setColor(new Color(150, 150, 150));
 		g.drawLine(50, 50, 200, 200);
 		g.drawLine(200, 400, 400, 200);
+		
+		
+		class ATest{
+			
+			/**
+			 * A Test of inner class 
+			 */
+			public void test(){
+				
+			}
+		}
+		
+		ATest a = new ATest(){
+			private int a = 10;
+			
+			@Override
+			public void test(){
+				System.out.println("AAAA");
+				System.out.println(a);
+			}
+		};
+		
+		a.test();
 		
 		try {
 			ImageIO.write(image, "jpg", new File("res/tt"));

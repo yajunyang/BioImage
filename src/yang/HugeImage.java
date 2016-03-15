@@ -55,27 +55,39 @@ public class HugeImage {
 	}
 	
 	public static void main(String[] args) {
-		int x = 14000;
+		int x = 16000;
 		int y = 15000;
 		int width = 1000;
 		int height = 1000;
-		String sourcePath = "E:/Data/www.brain-map.com/278260569_";
-		String targetPath = "E:/Data/region from Brain/";
-		int min = 2;
-		int max = 141;
+//		String sourcePath = "E:/Data/www.brain-map.com/278260569_";
+//		String targetPath = "E:/Data/region from Brain/";
+//		int min = 2;
+//		int max = 10;
+//		
+//		HugeImage h = new HugeImage(new Rectangle(x, y, width, height));
+//		for(int i = min; i <= max; i++) {
+//			String path = sourcePath + i + ".jpg";
+//			h.execute(path);
+//			BufferedImage subImage = h.getSubImage();
+//			try {
+//				ImageIO.write(subImage, "jpg", 
+//						new File(targetPath + i + ".jpg"));
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			Runtime.getRuntime().gc();
+//		}
 		
+		
+		String file = "E://test.jpg";
 		HugeImage h = new HugeImage(new Rectangle(x, y, width, height));
-		for(int i = min; i <= max; i++) {
-			String path = sourcePath + i + ".jpg";
-			h.execute(path);
-			BufferedImage subImage = h.getSubImage();
-			try {
-				ImageIO.write(subImage, "jpg", 
-						new File(targetPath + i + ".jpg"));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			Runtime.getRuntime().gc();
+		h.execute(file);
+		BufferedImage subImage = h.getSubImage();
+		
+		try {
+			ImageIO.write(subImage, "jpg", new File("E://subImage.jpg"));
+		} catch (IOException e) {
+			// TODO: handle exception
 		}
 	}
 }

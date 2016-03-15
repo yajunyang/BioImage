@@ -207,9 +207,7 @@ public class AnistropicHessianSmooth implements PlugIn{
 		return kernel;
 	}
 
-	public AnistropicHessianSmooth() {}
-	
-	public void main(String[] args) {	
+	public static void main(String[] args) {	
 		isMainMode = true;
 		byte[] image = {
 				 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,

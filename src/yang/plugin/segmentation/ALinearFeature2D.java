@@ -57,12 +57,16 @@ public class ALinearFeature2D implements PlugIn {
 		new ImageConverter(imps).convertToGray8();
 
 		// Multi-scale method
-		for (double scale = scaleMin + scaleStep; scale <= scaleMax; scale += scaleStep) {
+		for (double scale = scaleMin; scale <= scaleMax; scale += scaleStep) {
 			IJ.showProgress(scale / scaleMax);
 			Image eigenImage1 = myHessian2D.run(img, scale);
 			ImagePlus imps1 = eigenImage1.imageplus(); // share
 			new ImageConverter(imps1).convertToGray8();
-
+			
+			// Show
+			imps1.setTitle("scala=" + scale);
+			imps1.show();
+			
 			int w = imp.getWidth();
 			int h = imp.getHeight();
 			for (int y = 0; y < h; y++)

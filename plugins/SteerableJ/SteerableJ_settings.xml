@@ -1,12 +1,9 @@
 <settings>
-<order>4</order>
+<order>2</order>
 <set>2</set>
 <weights>
-<w>0.059</w>
-<w>-0.204</w>
-<w>0.024</w>
-<w>-0.194</w>
-<w>0.063</w>
+<w>0.16286750396763996</w>
+<w>-0.4886025119029199</w>
 </weights>
 <sigma>4.0</sigma>
 </settings>

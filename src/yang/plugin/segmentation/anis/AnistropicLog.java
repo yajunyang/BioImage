@@ -125,7 +125,12 @@ public class AnistropicLog implements PlugIn {
 
 		for (int i = 0; i < xValues.length; i++) {
 			xValues[i] = i;
-			yValues[i] = log(xValues[i], max, k);
+//			yValues[i] = log(xValues[i], max, k);
+			
+			double e = -(i-50)*(i-50);
+			e /= 2 * 0.1 * 0.1;
+			yValues[i] = 10 * (Math.exp(e) + 1);
+			
 		}
 
 		PlotWindow.noGridLines = false; // draw grid lines
@@ -233,10 +238,10 @@ public class AnistropicLog implements PlugIn {
 		return correct;
 	}
 	
-	public static void main(String[] args) {
-		double a = 255.0 / Math.log(1);
-		double b = a * Math.log(1);
-		System.out.println(b);
-	}
+//	public static void main(String[] args) {
+//		double a = 255.0 / Math.log(1);
+//		double b = a * Math.log(1);
+//		System.out.println(b);
+//	}
 
 }
