@@ -131,8 +131,7 @@ public class AComBinary implements PlugIn {
 			int dimen, int x, int y) {
 		for (int j = 0; j < dimen; j++) {
 			for (int i = 0; i < dimen; i++) {
-				kernel[j][i] = ip
-						.getPixel(x + i - dimen / 2, y + j - dimen / 2);
+				kernel[j][i] = ip.getPixel(x + i - dimen / 2, y + j - dimen / 2);
 			}
 		}
 		niBlack.setPixelsArray(kernel, dimen);
@@ -145,8 +144,8 @@ public class AComBinary implements PlugIn {
 		domain.init();
 		domain.threshold(error);
 //		domain.connect();
-		domain.connectVariableRatio(0.8); // 可变阈值比值法
-//		domain.histogramBasedMethod();  // 基于直方图的全局阈值方法
+//		domain.connectVariableRatio(0.8); // 可变阈值比值法
+		domain.histogramBasedMethod();  // 基于直方图的全局阈值方法
 	}
 }
 
@@ -414,7 +413,7 @@ class ConnectedDomain {
 			}
 		}
 
-		int T = getConnectThreshold(THRESHOLD.EXPECT);
+		int T = getConnectThreshold(THRESHOLD.OTSU);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				// marker[y][x] 对应标记结果

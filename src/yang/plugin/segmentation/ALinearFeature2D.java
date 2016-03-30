@@ -64,8 +64,8 @@ public class ALinearFeature2D implements PlugIn {
 			new ImageConverter(imps1).convertToGray8();
 			
 			// Show
-			imps1.setTitle("scala=" + scale);
-			imps1.show();
+//			imps1.setTitle("scala=" + scale);
+//			imps1.show();
 			
 			int w = imp.getWidth();
 			int h = imp.getHeight();
@@ -178,6 +178,8 @@ class MyHessian2D {
 						double cValue = Double.parseDouble(ALinearFeature2D.c);
 
 						ahxx = getFrangi(lamubda1, lamubda2, beta, cValue);
+//						ahxx = getLi(lamubda1, lamubda2);
+//						ahxx = getchenliPing(lamubda1, lamubda2);
 						Hxx.set(coords, ahxx);
 					}
 		Hxx.name(image.name() + " " + scale);
@@ -198,5 +200,25 @@ class MyHessian2D {
 		double right = 1 - Math.exp(r);
 		return left * right;
 	}
+	
+	private double getLi(double lam1, double lam2) {
+		if(lam1 >= 0 || lam2 >= 0)
+			return 0;
+		return Math.abs(lam2) - Math.abs(lam1);
+	}
 
+	@Deprecated
+	private double getchenliPing(double lam1, double lam2) {
+		if(isDoubleZero(lam1) || isDoubleZero(lam2))
+			return 0.0;
+		else {
+			return (Math.abs(lam2)-Math.abs(lam1))/(Math.abs(lam2)+Math.abs(lam1));
+		}
+	}
+	
+	private boolean isDoubleZero(double d) {
+		if(Math.abs(d)<=0.00001)
+			return true;
+		return false;
+	}
 }
