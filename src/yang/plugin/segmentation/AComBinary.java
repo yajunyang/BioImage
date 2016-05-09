@@ -144,8 +144,8 @@ public class AComBinary implements PlugIn {
 		domain.init();
 		domain.threshold(error);
 //		domain.connect();
-//		domain.connectVariableRatio(0.8); // 可变阈值比值法
-		domain.histogramBasedMethod();  // 基于直方图的全局阈值方法
+		domain.connectVariableRatio(0.3); // 可变阈值比值法
+//		domain.histogramBasedMethod();  // 基于直方图的全局阈值方法
 	}
 }
 
@@ -391,7 +391,7 @@ class ConnectedDomain {
 				if (nbip.get(x, y) == 0)
 					continue;
 				if (cdValue == 0 || markValue == 0
-						|| (double) markValue / cdValue < ratio) {
+						|| (double)markValue / cdValue < ratio) {
 					nbip.set(x, y, 0);
 				}
 			}

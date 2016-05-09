@@ -22,10 +22,10 @@ import imagescience.image.FloatImage;
 import imagescience.image.Image;
 
 public class ALinearFeature2D implements PlugIn {
-	
-	private static String scaleMinStr = "1.0";
-	private static String scaleStepStr = "0.2";
-	private static String scaleMaxStr = "3.0";
+
+	private static String scaleMinStr = "1";
+	private static String scaleStepStr = "1";
+	private static String scaleMaxStr = "8";
 
 	public static String beta = "0.5";
 	public static String c = "15";
@@ -62,10 +62,10 @@ public class ALinearFeature2D implements PlugIn {
 			Image eigenImage1 = myHessian2D.run(img, scale);
 			ImagePlus imps1 = eigenImage1.imageplus(); // share
 			new ImageConverter(imps1).convertToGray8();
-			
+
 			// Show
-//			imps1.setTitle("scala=" + scale);
-//			imps1.show();
+			// imps1.setTitle("scala=" + scale);
+			// imps1.show();
 			
 			int w = imp.getWidth();
 			int h = imp.getHeight();
@@ -161,9 +161,8 @@ class MyHessian2D {
 
 						final double b = -(ahxx + ahyy);
 						final double c = ahxx * ahyy - ahxy * ahxy;
-						final double q = -0.5
-								* (b + (b < 0 ? -1 : 1)
-										* Math.sqrt(b * b - 4 * c));
+						final double q = -0.5 * (b
+								+ (b < 0 ? -1 : 1) * Math.sqrt(b * b - 4 * c));
 						double lamubda1 = q;
 						double lamubda2 = c / q;
 
@@ -178,8 +177,8 @@ class MyHessian2D {
 						double cValue = Double.parseDouble(ALinearFeature2D.c);
 
 						ahxx = getFrangi(lamubda1, lamubda2, beta, cValue);
-//						ahxx = getLi(lamubda1, lamubda2);
-//						ahxx = getchenliPing(lamubda1, lamubda2);
+						// ahxx = getLi(lamubda1, lamubda2);
+						// ahxx = getchenliPing(lamubda1, lamubda2);
 						Hxx.set(coords, ahxx);
 					}
 		Hxx.name(image.name() + " " + scale);
@@ -191,7 +190,7 @@ class MyHessian2D {
 		if (lam2 > 0)
 			return 0;
 
-		double rb2 = (lam1 / lam2) * (lam1 / lam2 );
+		double rb2 = (lam1 / lam2) * (lam1 / lam2);
 		double b2 = 2 * beta * beta;
 		double s2 = lam1 * lam1 + lam2 * lam2;
 		double r = -s2 / (2 * c * c);
@@ -200,25 +199,12 @@ class MyHessian2D {
 		double right = 1 - Math.exp(r);
 		return left * right;
 	}
-	
+
 	private double getLi(double lam1, double lam2) {
-		if(lam1 >= 0 || lam2 >= 0)
+		if (lam2 < 0) {
+			return Math.abs(lam2) - Math.abs(lam1);
+		} else
 			return 0;
-		return Math.abs(lam2) - Math.abs(lam1);
 	}
 
-	@Deprecated
-	private double getchenliPing(double lam1, double lam2) {
-		if(isDoubleZero(lam1) || isDoubleZero(lam2))
-			return 0.0;
-		else {
-			return (Math.abs(lam2)-Math.abs(lam1))/(Math.abs(lam2)+Math.abs(lam1));
-		}
-	}
-	
-	private boolean isDoubleZero(double d) {
-		if(Math.abs(d)<=0.00001)
-			return true;
-		return false;
-	}
 }

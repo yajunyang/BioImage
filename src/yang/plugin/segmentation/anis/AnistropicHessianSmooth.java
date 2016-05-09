@@ -109,6 +109,9 @@ public class AnistropicHessianSmooth implements PlugIn{
 						System.out.println("x= " + x + " y= " + y + " " + degree[y][x]);
 					double[][] kernel = getOrientedGaussianKernel(a, b, degree[y][x], (int)h, sample);
 					convolve(ip, x, y, kernel);
+				} else {
+					double[][] kernel = getOrientedGaussianKernel(b, b, degree[y][x], 3, sample);
+					convolve(ip, x, y, kernel);
 				}
 			}
 	}

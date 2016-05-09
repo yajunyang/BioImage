@@ -215,5 +215,5 @@ public class Algorithm implements PlugIn{
 				result.getProcessor().set(x, y, value);;
 			}
 	}
-
+	
 }
